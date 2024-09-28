@@ -28,7 +28,7 @@ Copiar código
 └── Dockerfile            # Dockerfile para construção da imagem
 
 <p align="center" width="100%">
-    <img width="50%" src="[https://github.com/buildrun-tech/buildrun-desafio-backend-btg-pactual/blob/main/images/btg-logo.jpg](https://github.com/gbmeello/ItauApi2/blob/master/estrutura.jpg)"> 
+    <img width="50%" src="https://github.com/gbmeello/ItauApi2/blob/master/estrutura.jpg"> 
 </p>
 
 ## Configuração do GitHub Actions
