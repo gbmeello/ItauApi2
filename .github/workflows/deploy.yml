@@ -72,7 +72,7 @@ jobs:
           aws ecs describe-clusters --clusters fastapi-cluster || \
           aws ecs create-cluster --cluster-name fastapi-cluster --region $AWS_REGION
 
-      - name: Update ECS Service
+      - name: Register ECS Task Definition
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -81,9 +81,66 @@ jobs:
           ECR_REPOSITORY: fastapi-app
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          aws ecs update-service \
-            --cluster fastapi-cluster \
-            --service fastapi-service \
-            --force-new-deployment \
-            --region $AWS_REGION \
-            --output json
+          echo '{
+            "family": "fastapi-task",
+            "networkMode": "awsvpc",
+            "containerDefinitions": [
+              {
+                "name": "fastapi-app",
+                "image": "'$ECR_REGISTRY'/'$ECR_REPOSITORY':'$IMAGE_TAG'",
+                "essential": true,
+                "portMappings": [
+                  {
+                    "containerPort": 80,
+                    "hostPort": 80
+                  }
+                ],
+                "environment": [
+                  {
+                    "name": "ENV_VAR",
+                    "value": "value"
+                  }
+                ]
+              }
+            ],
+            "requiresCompatibilities": [
+              "FARGATE"
+            ],
+            "cpu": "256",
+            "memory": "512"
+          }' > task_definition.json
+
+          aws ecs register-task-definition \
+            --cli-input-json file://task_definition.json
+
+      - name: Create or Update ECS Service
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          SERVICE_NAME="fastapi-service"
+          CLUSTER_NAME="fastapi-cluster"
+          
+          # Check if service exists
+          SERVICE_EXISTS=$(aws ecs describe-services --cluster $CLUSTER_NAME --services $SERVICE_NAME --query 'services[0].serviceName' --output text || echo "None")
+          
+          if [ "$SERVICE_EXISTS" = "None" ]; then
+            echo "Creating new ECS service..."
+            aws ecs create-service \
+              --cluster $CLUSTER_NAME \
+              --service-name $SERVICE_NAME \
+              --task-definition fastapi-task \
+              --desired-count 1 \
+              --launch-type FARGATE \
+              --network-configuration "awsvpcConfiguration={subnets=[subnet-12345678],securityGroups=[sg-12345678],assignPublicIp=ENABLED}" \
+              --region $AWS_REGION
+          else
+            echo "Updating existing ECS service..."
+            aws ecs update-service \
+              --cluster $CLUSTER_NAME \
+              --service $SERVICE_NAME \
+              --task-definition fastapi-task \
+              --force-new-deployment \
+              --region $AWS_REGION
+          fi
