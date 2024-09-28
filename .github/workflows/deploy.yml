@@ -80,10 +80,12 @@ jobs:
           ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           ECR_REPOSITORY: fastapi-app
           IMAGE_TAG: ${{ github.sha }}
+          EXECUTION_ROLE_ARN: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/ecsTaskExecutionRole # Substitua pelo ARN do seu papel
         run: |
           echo '{
             "family": "fastapi-task",
             "networkMode": "awsvpc",
+            "executionRoleArn": "'$EXECUTION_ROLE_ARN'",
             "containerDefinitions": [
               {
                 "name": "fastapi-app",
