@@ -27,7 +27,8 @@ Copiar código
 │
 └── Dockerfile            # Dockerfile para construção da imagem
 
-Configuração do GitHub Actions
+## Configuração do GitHub Actions
+
 Criar o Workflow de Deploy
 Crie um arquivo chamado deploy.yml no diretório .github/workflows/ do seu repositório com o seguinte conteúdo:
 yaml
@@ -84,24 +85,35 @@ Acesse a aba Actions no seu repositório GitHub para monitorar a execução do w
 Verificando o Deploy
 
 Acesse o console do AWS e verifique se o serviço ECS foi atualizado corretamente com a nova imagem. Você pode visualizar a tarefa e o estado do serviço na interface do ECS.
-Testando a API
+
+## Testando a API
+
 Após o deploy, você pode testar a API utilizando várias ferramentas. Aqui estão algumas sugestões:
 
 ## Obtenha o Endpoint da API
+
 No console do AWS, encontre o Load Balancer associado ao seu serviço ECS. Anote o DNS name.
+
 ## Testes com cURL
 Utilize o curl para fazer requisições à sua API:
 bash
 Copiar código
+
 # Teste o endpoint raiz
+
 curl http://<your-load-balancer-dns>:80/
 
 # Teste um endpoint específico (exemplo: listando clientes)
+
 curl http://<your-load-balancer-dns>:80/clients
+
 ## Testes com Postman
+
 Abra o Postman e crie uma nova requisição.
 Insira a URL da sua API (por exemplo, http://<your-load-balancer-dns>:80/clients).
 Configure o método HTTP (GET, POST, etc.) e adicione cabeçalhos ou corpo da requisição conforme necessário.
 Clique em Send para visualizar a resposta.
-Monitoramento e Logs
+
+## Monitoramento e Logs
+
 Utilize o AWS CloudWatch para monitorar logs e métricas da sua aplicação. Isso ajudará a identificar quaisquer problemas ou anomalias na operação da API.
