@@ -1,7 +1,9 @@
-Deploy da Aplicação FastAPI
+<h3>Deploy da Aplicação FastAPI</h3>
+
 Este documento descreve o processo de deploy da aplicação FastAPI utilizando o Amazon ECS (Elastic Container Service) e GitHub Actions. O deploy automatizado permite que você envie alterações de código para o ambiente de produção de forma eficiente e confiável.
 
-Pré-requisitos
+## Pré-requisitos
+
 Antes de iniciar o processo de deploy, certifique-se de que você possui os seguintes itens configurados:
 
 Uma conta AWS com acesso ao Amazon ECS e ECR (Elastic Container Registry).
@@ -24,6 +26,7 @@ Copiar código
 ├── requirements.txt      # Dependências do projeto
 │
 └── Dockerfile            # Dockerfile para construção da imagem
+
 Configuração do GitHub Actions
 Criar o Workflow de Deploy
 Crie um arquivo chamado deploy.yml no diretório .github/workflows/ do seu repositório com o seguinte conteúdo:
@@ -70,6 +73,7 @@ jobs:
     - name: Deploy to ECS
       run: |
         aws ecs update-service --cluster your-cluster-name --service your-service-name --force-new-deployment
+
 Realizando o Deploy
 Fazendo um Push para o Repositório
 
@@ -83,9 +87,9 @@ Acesse o console do AWS e verifique se o serviço ECS foi atualizado corretament
 Testando a API
 Após o deploy, você pode testar a API utilizando várias ferramentas. Aqui estão algumas sugestões:
 
-Obtenha o Endpoint da API
+## Obtenha o Endpoint da API
 No console do AWS, encontre o Load Balancer associado ao seu serviço ECS. Anote o DNS name.
-Testes com cURL
+## Testes com cURL
 Utilize o curl para fazer requisições à sua API:
 bash
 Copiar código
@@ -94,7 +98,7 @@ curl http://<your-load-balancer-dns>:80/
 
 # Teste um endpoint específico (exemplo: listando clientes)
 curl http://<your-load-balancer-dns>:80/clients
-Testes com Postman
+## Testes com Postman
 Abra o Postman e crie uma nova requisição.
 Insira a URL da sua API (por exemplo, http://<your-load-balancer-dns>:80/clients).
 Configure o método HTTP (GET, POST, etc.) e adicione cabeçalhos ou corpo da requisição conforme necessário.
