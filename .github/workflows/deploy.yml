@@ -25,8 +25,6 @@ jobs:
 
       # Adicionando a execução do Alembic corretamente
       - name: Run Alembic migrations
-        env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}  # Certifique-se de que a região esteja presente aqui também, se necessário no Alembic
         run: |
           alembic upgrade head
 
@@ -36,12 +34,14 @@ jobs:
       - name: Log in to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-        with:
-          region: ${{ secrets.AWS_REGION }}  # Adicionando a região aqui para logar no ECR
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}  # Definindo a região como variável de ambiente
 
       - name: Build and push Docker image
         env:
-          AWS_REGION: ${{ secrets.AWS_REGION }}  # Certifique-se de que a região esteja presente
+          AWS_REGION: ${{ secrets.AWS_REGION }}
           ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           ECR_REPOSITORY: fastapi-app
           IMAGE_TAG: ${{ github.sha }}
@@ -58,7 +58,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}  # Adicionando a região aqui para garantir que esteja definida no deploy
+          AWS_REGION: ${{ secrets.AWS_REGION }}
           ECR_REGISTRY: ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
           ECR_REPOSITORY: fastapi-app
           IMAGE_TAG: ${{ github.sha }}
