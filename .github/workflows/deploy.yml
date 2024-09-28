@@ -23,7 +23,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # Adicionando a execução do Alembic corretamente
       - name: Run Alembic migrations
         run: |
           alembic upgrade head
@@ -39,7 +38,6 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
 
-      # Adicionando etapa para verificar e criar o repositório se não existir
       - name: Create ECR repository if not exists
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -65,6 +63,15 @@ jobs:
     needs: build
 
     steps:
+      - name: Create ECS cluster if not exists # Etapa opcional para criar o cluster
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws ecs describe-clusters --clusters fastapi-cluster || \
+          aws ecs create-cluster --cluster-name fastapi-cluster --region $AWS_REGION
+
       - name: Update ECS Service
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
