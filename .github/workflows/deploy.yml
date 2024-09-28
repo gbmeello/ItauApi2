@@ -25,10 +25,8 @@ jobs:
       # Adicionando a execução do Alembic corretamente
       - name: Run Alembic migrations
         run: |
-           pip install alembic
-          alembic init alembic
-          alembic revision --autogenerate -m "Initial migration"
-          python -m alembic upgrade head
+
+          alembic upgrade head
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1

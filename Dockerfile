@@ -20,4 +20,4 @@ RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
 COPY . /code/app
 
 
-CMD ["fastapi", "run", "app/main.py", "--port", "80"]
+CMD ["alembic", "upgrade", "head","fastapi", "run", "app/main.py", "--port", "80"]
