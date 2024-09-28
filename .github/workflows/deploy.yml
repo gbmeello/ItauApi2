@@ -25,6 +25,7 @@ jobs:
       # Adicionando a execução do Alembic corretamente
       - name: Run Alembic migrations
         run: |
+
           alembic upgrade head
 
       - name: Set up Docker Buildx
