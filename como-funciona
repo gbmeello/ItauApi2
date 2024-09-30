@@ -1,5 +1,6 @@
+<h3>
 ## Componentes e Etapas:
-
+</h3>
 Usuários: Representam os clientes ou sistemas externos que acessam a API para realizar operações (como criar, listar ou deletar clientes).
 
 API Gateway: Atua como uma camada intermediária, recebendo as requisições HTTP dos usuários e direcionando-as ao cluster ECS. Ele também pode aplicar políticas de segurança, como autenticação e autorização.
