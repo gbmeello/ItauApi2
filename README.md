@@ -10,7 +10,7 @@ Uma conta AWS com acesso ao Amazon ECS e ECR (Elastic Container Registry).
 Um repositório Git com o código da sua aplicação.
 AWS CLI configurada em seu ambiente local (opcional, mas recomendado para testes).
 
-##Estrutura do Projeto
+## Estrutura do Projeto
 
 <p align="center" width="100%">
     <img width="50%" src="https://github.com/gbmeello/ItauApi2/blob/master/estrutura.jpg"> 
